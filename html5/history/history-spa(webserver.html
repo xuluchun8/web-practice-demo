@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<style>
+  .wrapper{
+    width: 300px;
+    height: 300px;
+    border: solid 1px gray;
+  }
+  .button{
+    display: flex;
+    justify-content: space-around;
+    border-bottom: solid 1px gray;
+  }
+  button{
+    flex-grow: 1;
+    height: 50px;
+  }
+  .content{
+    text-align: center;
+    height: 250px;
+    line-height: 250px
+  }
+</style>
+<body>
+  <div class="wrapper">
+    <div class="button">
+      <button class="button1" data='one'>button1</button>
+      <button class="button2" data='two'>button2</button>
+      <button class="button3" data='three'>button3</button>
+    </div>
+    <div class="content"></div>
+  </div>
+  <script>  
+    var content = document.getElementsByClassName('content')[0]
+    var button = document.getElementsByClassName('button')[0]
+
+    init()
+    function init(){
+      history.replaceState({page : 'one'},null,'?one')
+      ajax('GET','./getData.php','page=one',toData,true)
+    }
+     
+    function toData(data){
+      content.innerHTML = data
+      console.log(data)
+    }
+
+    button.addEventListener('click',function(e){
+      let value = e.target.getAttribute('data')
+      history.pushState({page : value},null,'?' + value)
+      ajax('GET','./getData.php','page=' + value,toData,true)
+    },false)
+
+
+    window.addEventListener('popstate',function(e){
+      var newvalue = e.state.page
+      ajax('GET','./getData.php','page=' + newvalue,toData,true)
+    },false)
+
+    // window.addEventListener('hashchange',function(e){
+    //   console.log(e);
+    //   var newvalue = e.state.page
+    //   ajax('GET','./getData.php','page=' + newvalue,toData,true)
+      
+    // })
+    function ajax(method, url, data, callback, flag) {
+      var xhr = null;
+      if (window.XMLHttpRequest) {
+        xhr = new XMLHttpRequest();
+      } else {
+        xhr = new ActiveXObject('Microsoft.XMLHttp');
+      }
+      if (method == 'POST') {
+        xhr.open('POST', url, flag);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+        xhr.send(data);
+      } else if (method == 'GET') {
+        xhr.open('GET', url + '?' + data, flag);
+        xhr.send();
+      }
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+          if (xhr.status == 200) {
+            callback(xhr.responseText)
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

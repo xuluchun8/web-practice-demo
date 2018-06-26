@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <fieldset>
+    <legend>分布读取文件</legend>
+    <input type="file" placeholder="选择文件" id="file">
+    <input type="button" value="中断" id="stop">
+    <div class="progress">
+      <label for="progress">加载进度</label>
+      <progress max="100" id="progress" value="0"></progress>
+    </div>
+  </fieldset>
+  <script src="./loadFile-my.js"></script>
+  <script>
+    var stop = document.getElementById('stop')
+    var progress = document.getElementById('progress')
+    var events = {
+      load : function(result){
+        console.log('load')
+        console.log(result)
+      },
+      progress: function(percent){
+        progress.value = percent
+      },
+      success : function(){
+        console.log("success")
+      }
+    }
+    file.addEventListener('change',function(e){
+      let file = this.files[0]
+      console.log(file)
+      let loader = new FileLoader(file,events)
+    },false)
+
+    stop.addEventListener('click',function(e){
+      console.log("sdf")
+    },false)
+  </script>
+</body>
+</html>
